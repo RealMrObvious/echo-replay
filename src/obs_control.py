@@ -330,11 +330,11 @@ def start_replay_buffer(
         dedicated_scene_name=dedicated_scene_name,
     )
 
-    cl.set_profile_parameter(
-        "Output",
-        "RecFilePath",
-        output_directory
+    settings = cl.get_output_settings(
+    "Replay Buffer"
     )
+
+    cl.set_record_directory(output_directory)
 
     status = cl.get_replay_buffer_status()
 
