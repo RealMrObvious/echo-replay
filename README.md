@@ -1,25 +1,43 @@
-````markdown id="59381"
-# Echo
+I updated it to match your current project features: tray app, hotkeys, automatic OBS startup, replay buffer workflow, window detection, and current config style.
 
-Echo is a lightweight game clipping tool that automatically detects running games and uses OBS to capture gameplay through the OBS WebSocket API.
+
+# Echo Replay
+
+Echo Replay is a lightweight automatic game clipping tool that detects running games, configures OBS automatically, and saves instant gameplay clips using the OBS Replay Buffer.
+
+The goal is a ShadowPlay-style experience using OBS and the OBS WebSocket API.
 
 ## Features
 
-- Detects when configured games are running
-- Creates and manages an OBS capture scene
+- Automatically detects configured games
+- Watches for games launching and closing
+- Automatically starts and configures OBS
+- Creates and manages a dedicated OBS capture scene
 - Supports:
-- Game Capture
+  - Game Capture
+- Automatically finds the correct game window from OBS
 - Automatically fits capture sources to the OBS canvas
 - Uses OBS Replay Buffer for instant clips
-- Designed to run quietly in the background
+- Global hotkey support for saving clips
+- System tray application
+- Runs quietly in the background
+
+## Future Goals
+- Compression/transcoding for discord sharing
+- Automatic/bulk game searching
+- improved gui/menu
+- cleaner code
+- installer/setup wizard
+- linux/apple support (kinda already there? but untested)
+- better setup guide/docs
 
 ## Requirements
 
 - Windows
 - Python 3.10+
 - OBS Studio
-- OBS WebSocket enabled
-- Configured games list
+- OBS WebSocket 5.x enabled
+- Configured game list
 
 ## Installation
 
@@ -38,6 +56,8 @@ pip install -r requirements.txt
 
 ## OBS Setup
 
+### Enable OBS WebSocket
+
 1. Open OBS Studio
 2. Go to:
 
@@ -47,31 +67,42 @@ Tools → WebSocket Server Settings
 
 3. Enable the WebSocket server
 
-4. Set:
+4. Configure:
 
-   * Port *(default should be `4455`)*
-   * Password *(optional)*
+```
+Port: 4455
+Password: Your password
+```
 
-5. Enable Replay Buffer:
+### Enable Replay Buffer
+
+In OBS:
 
 ```
 Settings → Output → Replay Buffer → Enable Replay Buffer
 ```
 
+Configure the replay length and recording settings to your preference.
+
 ## Configuration
 
-Create/edit your config file:
+Create or edit your configuration file:
 
 ```json
 {
     "host": "localhost",
     "port": 4455,
     "password": "password",
-    "fps": 60,
+    "hotkey": "ctrl+[",
+    "obs_path": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
+    "obs_timeout": 5,
+    "use_dedicated_scene": true,
+    "dedicated_scene_name": "clips",
+    "output_directory": ".",
     "games": [
         {
-            "name": "Rivals of Aether",
-            "path": "RivalsofAether.exe"
+        "name": "CS2",
+        "path": "cs2.exe"
         }
     ]
 }
@@ -85,43 +116,61 @@ Run:
 python src/main.py
 ```
 
-The program will:
+Echo Replay will:
 
-1. Search for configured games
-2. Find the game window
-3. Create/update the OBS capture source
-4. Start the Replay Buffer
+1. Start OBS
+2. Start the tray application
+3. Register the clip hotkey
+4. Wait for a configured game to launch
+5. Detect the game window
+6. Configure OBS Game Capture
+7. Start the Replay Buffer
+8. Wait for hotkey input
+
+Press your configured hotkey to save a replay.
+
+Example:
+
+```
+CTRL+[
+```
 
 ## Capture Modes
 
 ### Game Capture
 
-Captures the selected game window.
+Captures a specific game window through OBS Game Capture.
 
 Recommended for:
 
 * Games
-* DirectX/OpenGL applications
+* DirectX applications
+* OpenGL applications
 
-### Monitor Capture (WIP)
+Echo Replay automatically searches OBS's available Game Capture windows and selects the matching process.
 
-Captures an entire display.
+### Monitor Capture
+
+Captures an entire monitor.
 
 Recommended for:
 
-* Games that do not work with Game Capture
+* Games that do not support Game Capture
 * Emulators
-* Desktop applications
+* Applications with unusual rendering methods
 
 ## Project Structure
 
 ```
 src/
-├── main.py                 # Application entry point
-├── capture.py              # Capture logic
-├── obs_control.py          # OBS WebSocket control
-├── process.py              # Process/window detection
-example-config.py           # Configuration handling
+├── main.py              # Application entry point and game watcher
+├── gui.py               # Tray icon and hotkey handling
+├── obs_control.py       # OBS WebSocket control
+├── process.py           # Process detection and window handling
+├── config.py            # Configuration loading
+└── media/               # Notification sounds/assets
+
+requirements.txt         # Python dependencies
 ```
 
 ## Troubleshooting
@@ -130,27 +179,62 @@ example-config.py           # Configuration handling
 
 Try:
 
-* Switching between Game Capture and Monitor Capture
 * Running OBS as administrator
-* Checking the window title/class
-* Changing the OBS capture method to Windows Graphics Capture
+* Running the game before starting capture
+* Switching capture methods
+* Using Monitor Capture instead
+* Checking that the executable name matches your config
 
-### Replay Buffer will not start
+Example:
 
-Make sure:
+```json
+{
+    "path": "game.exe"
+}
+```
+
+must match the running process name.
+
+---
+
+### Replay Buffer does not save clips
+
+Check:
 
 ```
 OBS → Settings → Output → Replay Buffer
 ```
 
-is enabled.
+Make sure:
+
+* Replay Buffer is enabled
+* The save location exists
+* OBS has permission to write files
+
+---
+
+### Game window is not detected
+
+Echo Replay relies on OBS's Game Capture window list.
+
+Try:
+
+* Waiting a few seconds after launching the game
+* Checking that OBS can manually capture the game
+* Running OBS before launching the game
+
+---
 
 ## License
 
 ```
-Personal project. Use and modify as needed.
+Personal project.
+Use and modify as needed.
 ```
 
 ## AI Disclosure
 
-Most comments/documentation are AI generated however all code is written by me.
+
+```
+Documentation and comments were assisted by AI. All code and project implementation were written by me.
+```
