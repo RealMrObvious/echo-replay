@@ -2,7 +2,7 @@
 
 Echo Replay is a lightweight automatic game clipping tool that detects running games, configures OBS automatically, and saves instant gameplay clips using the OBS Replay Buffer.
 
-The goal is a ShadowPlay-style experience using OBS and the OBS WebSocket API.
+The goal is a ShadowPlay-style/steelseries moments experience using OBS and the OBS WebSocket API.
 
 ## Features
 
@@ -42,7 +42,7 @@ Clone the repository:
 
 ```bash
 git clone <repository-url>
-cd clipping-software
+cd echo-replay
 ````
 
 Install dependencies:
