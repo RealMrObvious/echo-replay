@@ -23,21 +23,44 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build EXE
-        shell: cmd
+      - name: Read version from version.yaml
+        shell: pwsh
         run: |
-          pyinstaller --onefile --windowed ^
-            --name Echo_Replay ^
-            --hidden-import pystray ^
-            --hidden-import PIL ^
-            --hidden-import playsound ^
-            --add-data "media;media" ^
-            --icon "media/icon.ico" ^
+          $versionFile = "version.yaml"
+          $yaml = Get-Content $versionFile
+
+          $major = ($yaml | Select-String "^major:").ToString().Split(":")[1].Trim()
+          $minor = ($yaml | Select-String "^minor:").ToString().Split(":")[1].Trim()
+          $patch = ($yaml | Select-String "^patch:").ToString().Split(":")[1].Trim()
+
+          $version = "$major.$minor.$patch"
+          Write-Host "Building Echo_Replay version $version"
+
+          echo "APP_VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Build EXE
+        shell: pwsh
+        run: |
+          pyinstaller --onefile --windowed `
+            --name Echo_Replay `
+            --hidden-import pystray `
+            --hidden-import PIL `
+            --hidden-import playsound `
+            --add-data "media;media" `
+            --add-data "config.json;." `
+            --icon "media/icon.ico" `
             src\main.py
 
-      - name: Create Release and Upload EXE
+      - name: Build Installer
+        shell: pwsh
+        run: |
+          iscc "/DAppVersion=$env:APP_VERSION" "installer.iss"
+
+      - name: Create Release and Upload Artifacts
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/Echo_Replay.exe
+          files: |
+            dist/Echo_Replay.exe
+            installer/Echo_ReplaySetup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
