@@ -1,13 +1,19 @@
 # Read version.yaml
 $versionFile = "version.yaml"
-
 $yaml = Get-Content $versionFile
 
-$major = ($yaml | Select-String "^major:").ToString().Split(":")[1].Trim()
-$minor = ($yaml | Select-String "^minor:").ToString().Split(":")[1].Trim()
-$patch = ($yaml | Select-String "^patch:").ToString().Split(":")[1].Trim()
+$major = ($yaml | Select-String '^major:').ToString().Split(':', 2)[1].Trim()
+$minor = ($yaml | Select-String '^minor:').ToString().Split(':', 2)[1].Trim()
+$patch = ($yaml | Select-String '^patch:').ToString().Split(':', 2)[1].Trim()
 
-$version = "$major.$minor.$patch"
+$match = $yaml | Select-String '^name:'
+$name = if ($match) { $match.ToString().Split(':', 2)[1].Trim() } else { "" }
+
+if ([string]::IsNullOrWhiteSpace($name)) {
+    $version = "$major.$minor.$patch"
+} else {
+    $version = "$major.$minor.$patch.$name"
+}
 
 Write-Host "Building Echo_Replay version $version"
 
