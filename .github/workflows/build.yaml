@@ -70,8 +70,10 @@ jobs:
       - name: Create Release and Upload Artifacts
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ env.APP_VERSION }}
+          name: v${{ env.APP_VERSION }}
+          prerelease: ${{ contains(env.APP_VERSION, '.alpha') || contains(env.APP_VERSION, '.beta') || contains(env.APP_VERSION, '.rc') }}
           files: |
-            dist/Echo_Replay.exe
-            installer/Echo_ReplaySetup.exe
+            installer/Echo_Replay_Setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
