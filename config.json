@@ -1,6 +1,6 @@
 {
   "obs_path": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
-  "hotkey": "ctrl+[",
+  "hotkey": "alt+[",
   "host": "localhost", 
   "port": 4455,
   "password": "mystrongpass",
@@ -8,19 +8,19 @@
   "record_mic":true,
   "use_dedicated_scene": true,
   "dedicated_scene_name": "clips",
-  "output_directory": ".",
+  "output_directory": "output_directory_path",
   "games": [
     {
-      "name": "CS2",
-      "path": "cs2.exe"
+      "name": "Game1",
+      "path": "game1.exe"
     },
     {
-      "name": "Rivals of Aether",
-      "path": "RivalsofAether.exe"
+      "name": "Game2",
+      "path": "game1.exe"
     },
     {
-      "name": "oj",
-      "path": "100orange.exe"
+      "name": "Game3",
+      "path": "Game3.exe"
     }
   ]
 }
