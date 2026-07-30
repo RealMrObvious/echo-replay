@@ -8,6 +8,7 @@ from obs_control import (
     stop_replay_buffer,
     stop_obs,
 )
+from helper import resource_path
 
 import threading
 import time
@@ -42,7 +43,7 @@ def save_clip():
     print("Saving clip...")
     
     obs_client.save_replay_buffer()
-    playsound("media/chime.mp3")
+    playsound(str(resource_path("media/chime.mp3")))
 
     time.sleep(0.5)
 

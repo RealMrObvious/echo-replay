@@ -4,6 +4,7 @@ import pystray
 from PIL import Image
 from obs_control import stop_obs, stop_replay_buffer
 import sys
+from helper import resource_path
 
 
 def quit_app(icon, item, config, shutdown_event):
@@ -25,7 +26,7 @@ def quit_app(icon, item, config, shutdown_event):
 
 
 def start_tray(config, shutdown_event):
-    image = Image.open("media/icon.png")
+    image = Image.open(resource_path("media/icon.png"))
 
     menu = pystray.Menu(
         pystray.MenuItem(
