@@ -72,7 +72,7 @@ class ObsController(QObject):
         if obs_process is None:
             return
 
-        self.obs.stop_replay_buffer()
+        self.stop_replay_buffer()
 
         if obs_process.poll() is None:
             print("Closing OBS...")
