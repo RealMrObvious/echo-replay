@@ -21,7 +21,7 @@ Write-Host "Building Echo_Replay version $version"
 # Build EXE manually
 pyinstaller --onefile --windowed `
   --name Echo_Replay `
-  --hidden-import pystray `
+  --hidden-import PyQt5 `
   --hidden-import PIL `
   --hidden-import playsound `
   --add-data "media;media" `

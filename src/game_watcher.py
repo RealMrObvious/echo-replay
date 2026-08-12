@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
-from process import wait_for_game_open, wait_for_game_close
+from process_watcher import wait_for_game_open, wait_for_game_close
 
 
 class GameWatcher(QObject):
@@ -12,13 +12,11 @@ class GameWatcher(QObject):
         self.games = games
 
     def run(self):
-        games = self.games
-        
         while not QThread.currentThread().isInterruptionRequested():
 
             # Search for a game from the list to open
             pid, game = wait_for_game_open(
-                games,
+                self.games,
                 QThread.currentThread()
             )
 
