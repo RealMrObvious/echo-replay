@@ -1,5 +1,7 @@
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QDesktopServices
 from PyQt5.QtWidgets import QSystemTrayIcon, QAction, QMenu 
+from PyQt5.QtCore import QUrl
+from pathlib import Path
 
 class Tray(QSystemTrayIcon):
     def __init__(self, app, parent=None):
@@ -13,6 +15,7 @@ class Tray(QSystemTrayIcon):
 
         self.option1 = QAction("Open App", self.menu)
         self.option2 = QAction("Settings", self.menu)
+        self.option2.triggered.connect(self.open_settings)
         self.quit_action = QAction("Exit", self.menu)
 
         self.menu.addAction(self.option1)
@@ -26,3 +29,9 @@ class Tray(QSystemTrayIcon):
         self.show()
 
         print("Tray created")
+
+    def open_settings(self):
+        settings_path = Path("config.json").resolve()
+        QDesktopServices.openUrl(
+            QUrl.fromLocalFile(str(settings_path))
+        )
