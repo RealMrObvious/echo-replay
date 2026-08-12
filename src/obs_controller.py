@@ -37,8 +37,8 @@ class ObsController(QObject):
         self.obs = None
         self.input_name = "Game Capture"
         self.target_executable = None               # The target executable
-        self.target_window = None                   # OBS custom name for the target executable for game capture
         self.target_pid = None
+        self.target_window = None                   # OBS custom name for the target executable for game capture
         self.item_id = None                         # ID of an item within a scene (ie. gamecapture -> id=3)
         
 
@@ -346,5 +346,16 @@ class ObsController(QObject):
 
         self.obs_setup()
         self.start_replay_buffer()
-        playsound(str(resource_path("media/game_detected.mp3")))
+        playsound(str(resource_path("media/game_on.mp3")))
+
+    @pyqtSlot()
+    def on_game_closed(self):
+        print(f"Game closed: {self.target_executable}")
+
+        self.target_executable = None
+        self.target_pid = None
+        self.target_window = None 
+
+        self.stop_replay_buffer()
+        playsound(str(resource_path("media/game_off.mp3")))
         

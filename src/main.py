@@ -57,6 +57,7 @@ def main():
     game_watcher = GameWatcher(config['games'])
     game_watcher.moveToThread(game_watcher_thread)
     game_watcher.game_started.connect(obs.on_game_started)
+    game_watcher.game_closed.connect(obs.on_game_closed)
 
     hotkey_listener = HotkeyListener(config['hotkey'])
     hotkey_listener.save_clip_requested.connect(obs.save_clip)
