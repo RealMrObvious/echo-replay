@@ -1,169 +1,88 @@
-from gui import start_gui
+from gui.gui_main import MainWindow
+from game_watcher import GameWatcher
+from hotkey_listener import HotkeyListener
+from obs_controller import ObsController
+import sys
 from config import load_config
-from process import check_for_running_games, check_running_game
-from playsound3 import playsound
-from obs_control import (
-    start_replay_buffer,
-    start_obs,
-    stop_replay_buffer,
-    stop_obs,
-)
-from helper import resource_path
-
-import threading
-import time
-from pathlib import Path
-
-
-shutdown_event = threading.Event()
-obs_client = None
-
-
-def get_latest_clip(cl):
-    directory = Path(cl.get_record_directory().record_directory)
-
-    clips = [
-        f for f in directory.iterdir()
-        if f.is_file()
-    ]
-
-    if not clips:
-        return None
-
-    return max(clips, key=lambda f: f.stat().st_mtime)
-
-
-def save_clip():
-    global obs_client
-
-    if obs_client is None:
-        print("OBS not ready")
-        return
-
-    print("Saving clip...")
-    
-    obs_client.save_replay_buffer()
-    playsound(str(resource_path("media/chime.mp3")))
-
-    time.sleep(0.5)
-
-    if(not obs_client):
-        print(f"Saved clip")
-    else:
-        print(f"Saved clip to {get_latest_clip(obs_client)}")
-
-
-def wait_for_game(games):
-    while not shutdown_event.is_set():
-        pid, name = check_for_running_games(games)
-
-        if pid:
-            return pid, name
-
-        time.sleep(2)
-
-    return None, None
-
-
-def wait_for_game_close(pid, name):
-    while not shutdown_event.is_set():
-        pid, name = check_running_game(pid, name)
-
-        if pid is None:
-            return
-
-        time.sleep(3)
-
-
-def watch_games(config):
-    global obs_client
-
-    while not shutdown_event.is_set():
-
-        pid, name = wait_for_game(config["games"])
-
-        if shutdown_event.is_set() or pid is None:
-            break
-
-        print(f"Found game: {name}")
-
-        obs_client = start_replay_buffer(
-            host=config["host"],
-            port=config["port"],
-            password=config["password"],
-            title=name,
-            output_directory=config["output_directory"],
-            timeout=config["obs_timeout"],
-            use_dedicated_scene=config["use_dedicated_scene"],
-            dedicated_scene_name=config["dedicated_scene_name"],
-        )
-
-        wait_for_game_close(pid, name)
-
-        if shutdown_event.is_set():
-            break
-
-        print("Game Closed")
-
-        stop_replay_buffer(
-            host=config["host"],
-            port=config["port"],
-            password=config["password"],
-            timeout=config["obs_timeout"],
-        )
-
-        obs_client = None
-
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QThread
 
 def cleanup():
-    global obs_client
+    print()
+#     global obs_client
 
-    shutdown_event.set()
+#     shutdown_event.set()
 
-    if obs_client is not None:
-        stop_replay_buffer(
-            host=config["host"],
-            port=config["port"],
-            password=config["password"],
-            timeout=config["obs_timeout"],
-        )
+#     SHUTDOWN_EVENT = shutdown_event
 
-    stop_obs()
+#     if obs_client is not None:
+#         stop_replay_buffer(
+#             host=config["host"],
+#             port=config["port"],
+#             password=config["password"],
+#             timeout=config["obs_timeout"],
+#         )
+
+#     stop_obs()
 
 
 def main():
     global config
-
     config = load_config()
 
-    start_obs(config["obs_path"])
+    obs = ObsController(
+        obs_path = config["obs_path"],
+        host = config["host"],
+        port = config["port"],
+        password = config["password"],
+        timeout = config["obs_timeout"],
+        use_dedicated_scene = config["use_dedicated_scene"],
+        dedicated_scene_name = config["dedicated_scene_name"],
+        output_directory = config["output_directory"],
+    )
 
-    print("Starting GUI thread")
+    obs.start_obs()
 
-    threading.Thread(
-        target=start_gui,
-        args=(config, save_clip, shutdown_event),
-        daemon=True,
-    ).start()
+    print("Starting GUI")
 
-    print("Starting watcher thread")
+    app = QApplication([])
+    app.setQuitOnLastWindowClosed(False)
 
-    threading.Thread(
-        target=watch_games,
-        args=(config,),
-        daemon=True,
-    ).start()
+    GUI = MainWindow()
+    GUI.hide()
 
-    print("Threads started")
-    print("Echo Replay running")
+    game_watcher_thread = QThread()
+    hotkey_listener_thread = QThread()
+    
+    game_watcher = GameWatcher(config['games'])
+    game_watcher.moveToThread(game_watcher_thread)
+    game_watcher.game_started.connect(obs.on_game_started)
 
-    try:
-        shutdown_event.wait()
-    except KeyboardInterrupt:
-        print("\nStopping...")
-        cleanup()
+    hotkey_listener = HotkeyListener(config['hotkey'])
+    hotkey_listener.save_clip_requested.connect(obs.save_clip)
 
-    print("Exiting...")
+    # game_watcher.moveToThread(game_watcher_thread)
+    hotkey_listener.moveToThread(hotkey_listener_thread)
+
+    game_watcher_thread.started.connect(game_watcher.run)
+    hotkey_listener_thread.started.connect(hotkey_listener.start)
+
+    game_watcher.finished.connect(game_watcher_thread.quit)
+    game_watcher.finished.connect(game_watcher.deleteLater)
+    game_watcher_thread.finished.connect(game_watcher_thread.deleteLater)
+
+    hotkey_listener.finished.connect(hotkey_listener_thread.quit)
+    hotkey_listener.finished.connect(hotkey_listener.deleteLater)
+    hotkey_listener_thread.finished.connect(hotkey_listener_thread.deleteLater)
+
+    game_watcher_thread.start()
+    hotkey_listener_thread.start()
+
+    app.aboutToQuit.connect(game_watcher_thread.requestInterruption)
+    app.aboutToQuit.connect(hotkey_listener_thread.requestInterruption)
+    app.aboutToQuit.connect(obs.stop_obs)
+
+    sys.exit(app.exec_())
 
 
 if __name__ == "__main__":

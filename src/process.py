@@ -1,4 +1,8 @@
 import psutil
+import keyboard
+import time
+
+SHUTDOWN_EVENT = ''
 
 def check_for_running_games(games_list):
     """
@@ -58,3 +62,71 @@ def check_running_game(pid,name):
     
     # No matching game was found
     return None, None
+
+def listen_for_hotkey(hotkey, clip_callback):
+    keyboard.add_hotkey(
+        hotkey,
+        clip_callback
+    )
+
+
+def wait_for_game_open(games, thread):
+    while not thread.isInterruptionRequested():
+        pid, name = check_for_running_games(games)
+
+        if pid:
+            return pid, name
+
+        time.sleep(2)
+
+    return None, None
+
+
+def wait_for_game_close(pid, name, thread):
+    while not thread.isInterruptionRequested():
+        pid, name = check_running_game(pid, name)
+
+        if pid is None:
+            return
+
+        time.sleep(2)
+
+
+def watch_games(config):
+    global obs_client
+
+    while not SHUTDOWN_EVENT.is_set():
+
+        pid, name = wait_for_game_open(config["games"])
+
+        if SHUTDOWN_EVENT.is_set() or pid is None:
+            break
+
+        print(f"Found game: {name}")
+
+        obs_client = start_replay_buffer(
+            host=config["host"],
+            port=config["port"],
+            password=config["password"],
+            title=name,
+            output_directory=config["output_directory"],
+            timeout=config["obs_timeout"],
+            use_dedicated_scene=config["use_dedicated_scene"],
+            dedicated_scene_name=config["dedicated_scene_name"],
+        )
+
+        wait_for_game_close(pid, name)
+
+        if SHUTDOWN_EVENT.is_set():
+            break
+
+        print("Game Closed")
+
+        stop_replay_buffer(
+            host=config["host"],
+            port=config["port"],
+            password=config["password"],
+            timeout=config["obs_timeout"],
+        )
+
+        obs_client = None
