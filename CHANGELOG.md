@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.0] - 2026-08-12
 
 ### Added
-- Now chimes when a game you've started/stopped a targetted gane
+- Now chimes when a game you've started/stopped a targeted game
 - Replay buffer automatically disables when no game is detected (very nice for saving on memory.)
 - Settings button in tray auto opens config.json (must restart app to see changes)
 
