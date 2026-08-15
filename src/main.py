@@ -4,8 +4,9 @@ from hotkey_listener import HotkeyListener
 from obs_controller import ObsController
 import sys
 from config import load_config
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QThread
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QThread
+import time
 
 def cleanup():
     print()
@@ -45,6 +46,8 @@ def main():
 
     print("Starting GUI")
 
+    time.sleep(3)
+
     app = QApplication([])
     app.setQuitOnLastWindowClosed(False)
 
@@ -83,7 +86,7 @@ def main():
     app.aboutToQuit.connect(hotkey_listener_thread.requestInterruption)
     app.aboutToQuit.connect(obs.stop_obs)
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":

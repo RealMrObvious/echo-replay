@@ -4,7 +4,7 @@ import os, time
 from playsound3 import playsound
 from helper import *
 
-from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
+from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot
 
 class ObsController(QObject):
     finished = pyqtSignal()
@@ -289,7 +289,6 @@ class ObsController(QObject):
         self.fit_source_to_canvas()
 
     def start_replay_buffer(self):
-        settings = self.obs.get_output_settings("Replay Buffer")
         self.obs.set_record_directory(self.output_directory)
 
         status = self.obs.get_replay_buffer_status()

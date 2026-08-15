@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout
+from PyQt6.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout
 from .tray import Tray
 
 class MainWindow(QMainWindow):

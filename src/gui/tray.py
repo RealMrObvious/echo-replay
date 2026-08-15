@@ -1,6 +1,6 @@
-from PyQt5.QtGui import QIcon, QDesktopServices
-from PyQt5.QtWidgets import QSystemTrayIcon, QAction, QMenu 
-from PyQt5.QtCore import QUrl
+from PyQt6.QtGui import QIcon, QDesktopServices, QAction
+from PyQt6.QtWidgets import QSystemTrayIcon, QMenu 
+from PyQt6.QtCore import QUrl
 from pathlib import Path
 
 class Tray(QSystemTrayIcon):

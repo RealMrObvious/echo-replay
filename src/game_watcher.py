@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from PyQt6.QtCore import QObject, QThread, pyqtSignal
 from process_watcher import wait_for_game_open, wait_for_game_close
 
 
