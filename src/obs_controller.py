@@ -62,6 +62,13 @@ class ObsController(QObject):
         time.sleep(self.timeout)
         self.connect_obs()
 
+        if(Path(self.output_directory).is_dir() == False):
+            raise ValueError(
+                f"Output directory does not exist: {self.output_directory}"
+            )
+
+        self.obs.set_record_directory(self.output_directory)
+
     def stop_obs(self):
         """
         Closes OBS if it was started by the clipper.
@@ -289,13 +296,14 @@ class ObsController(QObject):
         self.fit_source_to_canvas()
 
     def start_replay_buffer(self):
-        self.obs.set_record_directory(self.output_directory)
+        try:
+            status = self.obs.get_replay_buffer_status()
 
-        status = self.obs.get_replay_buffer_status()
-
-        if not status.output_active:
-            print("Starting replay buffer...")
-            self.obs.start_replay_buffer()
+            if not status.output_active:
+                print("Starting replay buffer...")
+                self.obs.start_replay_buffer()
+        except Exception as e:
+            raise Exception(f"Error getting replay buffer status: {e}. \nHave you enabled the Replay Buffer in OBS settings?")
 
 
     def stop_replay_buffer(self):
