@@ -35,7 +35,7 @@ class ObsController(QObject):
 
         self.obs_process = None
         self.obs = None
-        self.input_name = "Game Capture"
+        self.input_name = "Echo Replay - Game Capture"
         self.target_executable = None               # The target executable
         self.target_pid = None
         self.target_window = None                   # OBS custom name for the target executable for game capture
