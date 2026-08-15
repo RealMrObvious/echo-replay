@@ -36,7 +36,12 @@ The goal is a ShadowPlay-style/steelseries moments experience using OBS and the 
 - OBS WebSocket 5.x enabled
 - Configured game list
 
-## Installation
+### [Getting Started](./docs/getting-started.md)
+
+### [Troubleshooting](./docs/faq.md)
+
+
+## Codebase Installation
 
 Clone the repository:
 
@@ -51,62 +56,9 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-## OBS Setup
-
-### Enable OBS WebSocket
-
-1. Open OBS Studio
-2. Go to:
-
-```
-Tools → WebSocket Server Settings
-```
-
-3. Enable the WebSocket server
-
-4. Configure:
-
-```
-Port: 4455
-Password: Your password
-```
-
-### Enable Replay Buffer
-
-In OBS:
-
-```
-Settings → Output → Replay Buffer → Enable Replay Buffer
-```
-
-Configure the replay length and recording settings to your preference.
-
-## Configuration
-
-Create or edit your configuration file:
-
-```json
-{
-    "host": "localhost",
-    "port": 4455,
-    "password": "password",
-    "hotkey": "ctrl+[",
-    "obs_path": "C:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
-    "obs_timeout": 5,
-    "use_dedicated_scene": true,
-    "dedicated_scene_name": "clips",
-    "output_directory": ".",
-    "games": [
-        {
-        "name": "CS2",
-        "path": "cs2.exe"
-        }
-    ]
-}
-```
+If you dont have [OBS](https://obsproject.com/) installed, you will need to install it. Launch OBS and follow the [OBS setup](./docs/getting-started.md/#obs-setup). When finished, exit out of OBS.
 
 ## Usage
-
 Run:
 
 ```bash
@@ -132,8 +84,6 @@ Example:
 CTRL+[
 ```
 
-## Capture Modes
-
 ### Game Capture
 
 Captures a specific game window through OBS Game Capture.
@@ -145,16 +95,6 @@ Recommended for:
 * OpenGL applications
 
 Echo Replay automatically searches OBS's available Game Capture windows and selects the matching process.
-
-### Monitor Capture
-
-Captures an entire monitor.
-
-Recommended for:
-
-* Games that do not support Game Capture
-* Emulators
-* Applications with unusual rendering methods
 
 ## Project Structure
 
@@ -169,58 +109,6 @@ src/
 
 requirements.txt         # Python dependencies
 ```
-
-## Troubleshooting
-
-### OBS does not capture the game
-
-Try:
-
-* Running OBS as administrator
-* Running the game before starting capture
-* Switching capture methods
-* Using Monitor Capture instead
-* Checking that the executable name matches your config
-
-Example:
-
-```json
-{
-    "path": "game.exe"
-}
-```
-
-must match the running process name.
-
----
-
-### Replay Buffer does not save clips
-
-Check:
-
-```
-OBS → Settings → Output → Replay Buffer
-```
-
-Make sure:
-
-* Replay Buffer is enabled
-* The save location exists
-* OBS has permission to write files
-
----
-
-### Game window is not detected
-
-Echo Replay relies on OBS's Game Capture window list.
-
-Try:
-
-* Waiting a few seconds after launching the game
-* Checking that OBS can manually capture the game
-* Running OBS before launching the game
-
----
 
 ## License
 
