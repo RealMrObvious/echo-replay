@@ -2,34 +2,12 @@ from gui.gui_main import MainWindow
 from game_watcher import GameWatcher
 from hotkey_listener import HotkeyListener
 from obs_controller import ObsController
-from process_watcher import check_for_running_programs, get_process
 from config import load_config
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QThread
-import time
 import sys
 
-def cleanup():
-    print()
-#     global obs_client
-
-#     shutdown_event.set()
-
-#     SHUTDOWN_EVENT = shutdown_event
-
-#     if obs_client is not None:
-#         stop_replay_buffer(
-#             host=config["host"],
-#             port=config["port"],
-#             password=config["password"],
-#             timeout=config["obs_timeout"],
-#         )
-
-#     stop_obs()
-
-
 def main():
-    global config
     config = load_config()
 
     obs = ObsController(
@@ -43,13 +21,9 @@ def main():
         output_directory = config["output_directory"],
     )
 
-    obs_pid, ___ = check_for_running_programs(["obs64.exe", "obs32.exe"])
-    existing_obs_process = get_process(obs_pid)
-    obs.start_or_connect_obs(existing_obs_process)
+    obs.start_or_connect_obs()
 
     print("Starting GUI")
-
-    time.sleep(3)
 
     app = QApplication([])
     app.setQuitOnLastWindowClosed(False)
@@ -65,10 +39,10 @@ def main():
     game_watcher.game_started.connect(obs.on_game_started)
     game_watcher.game_closed.connect(obs.on_game_closed)
 
+    print("Waiting for game to start...")
+
     hotkey_listener = HotkeyListener(config['hotkey'])
     hotkey_listener.save_clip_requested.connect(obs.save_clip)
-
-    # game_watcher.moveToThread(game_watcher_thread)
     hotkey_listener.moveToThread(hotkey_listener_thread)
 
     game_watcher_thread.started.connect(game_watcher.run)
@@ -97,4 +71,3 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         print("\nStopping...")
-        cleanup()
