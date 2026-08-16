@@ -2,11 +2,12 @@ from gui.gui_main import MainWindow
 from game_watcher import GameWatcher
 from hotkey_listener import HotkeyListener
 from obs_controller import ObsController
-import sys
+from process_watcher import check_for_running_programs, get_process
 from config import load_config
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QThread
 import time
+import sys
 
 def cleanup():
     print()
@@ -42,7 +43,9 @@ def main():
         output_directory = config["output_directory"],
     )
 
-    obs.start_obs()
+    obs_pid, ___ = check_for_running_programs(["obs64.exe", "obs32.exe"])
+    existing_obs_process = get_process(obs_pid)
+    obs.start_or_connect_obs(existing_obs_process)
 
     print("Starting GUI")
 

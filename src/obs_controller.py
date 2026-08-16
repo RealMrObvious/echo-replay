@@ -1,6 +1,7 @@
 import obsws_python as obs
 import subprocess
 import os, time
+from process_watcher import check_for_running_programs, get_process, popen_to_psutil_process
 from playsound3 import playsound
 from helper import *
 
@@ -45,29 +46,75 @@ class ObsController(QObject):
     def run(self):
         self.finished.emit()
 
-    def start_obs(self):
-        obs_path = self.obs_path
-        obs_bin = os.path.dirname(obs_path)
-        
-        self.obs_process = subprocess.Popen(
-            [
-                obs_path,
-                "--minimize-to-tray",
-                "--disable-shutdown-check" 
-            ],
-            cwd=obs_bin
-        )
+    def start_or_connect_obs(self):
+
+        obs_list = [
+            {'name': 'obs', 'path': 'obs64.exe'}, 
+            {'name': 'obs', 'path': 'obs32.exe'},
+            ]
+
+        existing_obs_process = None
+        obs_pid, ___ = check_for_running_programs(obs_list)
+        print(f"OBS PID: {obs_pid}")
+
+        if(obs_pid is not None):
+            existing_obs_process = get_process(obs_pid)
+            print(f"Found existing OBS process: {existing_obs_process}")
+
+        if(existing_obs_process is None):
+            obs_path = self.obs_path
+            obs_bin = os.path.dirname(obs_path)
+
+            print(f"Starting new OBS process: {existing_obs_process}")
+            
+            self.obs_process = subprocess.Popen(
+                [
+                    obs_path,
+                    "--minimize-to-tray",
+                    "--disable-shutdown-check" 
+                ],
+                cwd=obs_bin
+            )
+
+            self.obs_process = popen_to_psutil_process(self.obs_process)
+
+        else:
+            self.obs_process = existing_obs_process
+            print("OBS already running, connecting to WebSocket server...")
     
-        # Give OBS time to start WebSocket server
+        # Give OBS time to start up
         time.sleep(self.timeout)
         self.connect_obs()
+
+        # Give OBS time to processing
+        time.sleep(self.timeout)
 
         if(Path(self.output_directory).is_dir() == False):
             raise ValueError(
                 f"Output directory does not exist: {self.output_directory}"
             )
 
-        self.obs.set_record_directory(self.output_directory)
+        self.set_record_directory()
+
+    def set_record_directory(self):
+        directory = self.output_directory
+
+        for attempt in range(1, 10):
+            try:
+                self.obs.set_record_directory(directory)
+
+                print("OBS is ready.")
+                return True
+
+            except obs.error.OBSSDKRequestError as e:
+                print(
+                    f"OBS not ready "
+                    f"(attempt {attempt}/10): {e}"
+                )
+
+                time.sleep(1)
+
+        raise Exception("OBS did not become ready, could not set record directory.")
 
     def stop_obs(self):
         """
@@ -76,43 +123,44 @@ class ObsController(QObject):
 
         obs_process = self.obs_process
         
-        if obs_process is None:
+        if obs_process is None or not obs_process.is_running():
             return
 
         self.stop_replay_buffer()
+        print("Closing OBS...")
+        obs_process.terminate()
 
-        if obs_process.poll() is None:
-            print("Closing OBS...")
-            obs_process.terminate()
-
-            try:
-                obs_process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                print("Force closing OBS...")
-                obs_process.kill()
+        try:
+            obs_process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            print("Force closing OBS...")
+            obs_process.kill()
 
     def connect_obs(self):
         """
         Creates and returns an OBS WebSocket client.
         """
 
-        try:
+        for i in range(5):
+            try:
+                obs_client = obs.ReqClient(
+                    host=self.host,
+                    port=self.port,
+                    password=self.password,
+                    timeout=self.timeout
+                )
 
-            obs_client = obs.ReqClient(
-                host=self.host,
-                port=self.port,
-                password=self.password,
-                timeout=self.timeout
-            )
+                self.obs = obs_client
+                return obs_client
 
-            self.obs = obs_client
-            return obs_client
+            except Exception as e:
+                print(f"Failed attempt {i+1}/5 to connect to OBS WebSocket server: {e}")
+                time.sleep(2)
 
-        except Exception:
-            raise Exception(
-                f"Unable to connect to OBS.\n"
-                f"Connecting to {self.host}:{self.port}"
-            )
+        raise Exception(
+            f"Unable to connect to OBS.\n"
+            f"Connecting to {self.host}:{self.port}"
+        )
 
     def ensure_scene(self):
         """
