@@ -10,28 +10,29 @@ class Tray(QSystemTrayIcon):
         super().__init__(icon, parent)
 
         self.app = app
+        self.window = parent
 
         self.menu = QMenu()
 
-        self.option1 = QAction("Open App", self.menu)
-        self.option2 = QAction("Settings", self.menu)
-        self.option2.triggered.connect(self.open_settings)
+        self.open_action = QAction("Open App", self.menu)
+        self.add_game_action = QAction("Add Game", self.menu)
+        self.settings_action = QAction("Settings", self.menu)
+        self.logs_action = QAction("Open Logs", self.menu)
         self.quit_action = QAction("Exit", self.menu)
 
-        self.menu.addAction(self.option1)
-        self.menu.addAction(self.option2)
+        self.menu.addAction(self.open_action)
+        self.menu.addAction(self.add_game_action)
+        self.menu.addAction(self.settings_action)
+        self.menu.addAction(self.logs_action)
         self.menu.addSeparator()
         self.menu.addAction(self.quit_action)
 
+        self.activated.connect(self.window.open_gallery)
+        self.open_action.triggered.connect(self.window.open_gallery)
+        self.add_game_action.triggered.connect(self.window.open_add_games)
+        self.settings_action.triggered.connect(self.window.open_settings)
+        self.logs_action.triggered.connect(self.window.open_logs)
         self.quit_action.triggered.connect(app.quit)
 
         self.setContextMenu(self.menu)
         self.show()
-
-        print("Tray created")
-
-    def open_settings(self):
-        settings_path = Path("config.json").resolve()
-        QDesktopServices.openUrl(
-            QUrl.fromLocalFile(str(settings_path))
-        )
