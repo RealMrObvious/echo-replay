@@ -20,7 +20,7 @@ class ObsController(QObject):
         password="mystrongpass",
         timeout=5,
         use_dedicated_scene=True,
-        dedicated_scene_name="clips",
+        dedicated_scene_name="Clips - Echo Replay",
         output_directory="",
     ):
         super().__init__()
