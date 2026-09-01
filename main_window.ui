@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="gallery_tab">
      <attribute name="title">
@@ -122,6 +122,30 @@
      <attribute name="title">
       <string>Settings</string>
      </attribute>
+    </widget>
+    <widget class="QWidget" name="Shrink">
+     <attribute name="title">
+      <string>Embed</string>
+     </attribute>
+     <widget class="QFrame" name="dropFrame">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>651</width>
+        <height>701</height>
+       </rect>
+      </property>
+      <property name="acceptDrops">
+       <bool>true</bool>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Shape::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Shadow::Raised</enum>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="logs_tab">
      <attribute name="title">
