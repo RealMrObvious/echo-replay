@@ -26,6 +26,9 @@ class MainWindow(QMainWindow):
     def open_add_games(self):
         self.open_tab(self.ui.add_games_tab)
 
+    def open_share(self):
+        self.open_tab(self.ui.share_tab)
+
     def open_logs(self):
         self.open_tab(self.ui.logs_tab)
 

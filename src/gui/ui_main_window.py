@@ -48,6 +48,16 @@ class Ui_MainWindow(object):
         self.settings_tab = QtWidgets.QWidget()
         self.settings_tab.setObjectName("settings_tab")
         self.tabWidget.addTab(self.settings_tab, "")
+        self.share_tab = QtWidgets.QWidget()
+        self.share_tab.setObjectName("share_tab")
+        self.dropFrame = QtWidgets.QFrame(parent=self.share_tab)
+        self.dropFrame.setGeometry(QtCore.QRect(10, 10, 651, 701))
+        self.dropFrame.setAcceptDrops(True)
+        self.dropFrame.setToolTip("")
+        self.dropFrame.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
+        self.dropFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.dropFrame.setObjectName("dropFrame")
+        self.tabWidget.addTab(self.share_tab, "")
         self.logs_tab = QtWidgets.QWidget()
         self.logs_tab.setObjectName("logs_tab")
         self.logOutput = QtWidgets.QPlainTextEdit(parent=self.logs_tab)
@@ -58,7 +68,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -71,4 +81,5 @@ class Ui_MainWindow(object):
         self.games_to_watch_label.setText(_translate("MainWindow", "Games to watch"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.add_games_tab), _translate("MainWindow", "Add Games"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.settings_tab), _translate("MainWindow", "Settings"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.share_tab), _translate("MainWindow", "Share"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.logs_tab), _translate("MainWindow", "Logs"))
