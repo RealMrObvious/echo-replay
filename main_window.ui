@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="gallery_tab">
      <attribute name="title">
@@ -123,9 +123,9 @@
       <string>Settings</string>
      </attribute>
     </widget>
-    <widget class="QWidget" name="Shrink">
+    <widget class="QWidget" name="share_tab">
      <attribute name="title">
-      <string>Embed</string>
+      <string>Share</string>
      </attribute>
      <widget class="QFrame" name="dropFrame">
       <property name="geometry">
@@ -138,6 +138,9 @@
       </property>
       <property name="acceptDrops">
        <bool>true</bool>
+      </property>
+      <property name="toolTip">
+       <string extracomment="Drag files here to compress/share"/>
       </property>
       <property name="frameShape">
        <enum>QFrame::Shape::StyledPanel</enum>
