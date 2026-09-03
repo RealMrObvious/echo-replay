@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="gallery_tab">
      <attribute name="title">
@@ -118,23 +118,24 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="settings_tab">
-     <attribute name="title">
-      <string>Settings</string>
-     </attribute>
-    </widget>
     <widget class="QWidget" name="share_tab">
      <attribute name="title">
       <string>Share</string>
      </attribute>
-     <widget class="QFrame" name="dropFrame">
+     <widget class="QFrame" name="drop_frame">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>651</width>
+        <width>1191</width>
         <height>701</height>
        </rect>
+      </property>
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
       </property>
       <property name="acceptDrops">
        <bool>true</bool>
@@ -148,7 +149,82 @@
       <property name="frameShadow">
        <enum>QFrame::Shadow::Raised</enum>
       </property>
+      <widget class="QLabel" name="share_file_label">
+       <property name="geometry">
+        <rect>
+         <x>280</x>
+         <y>390</y>
+         <width>571</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Drag files here or click to browse</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QProgressBar" name="share_progress_bar">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>290</x>
+         <y>480</y>
+         <width>561</width>
+         <height>111</height>
+        </rect>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::ActionsContextMenu</enum>
+       </property>
+       <property name="value">
+        <number>24</number>
+       </property>
+       <property name="textVisible">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="share_file_thumbnail">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>180</y>
+         <width>331</width>
+         <height>191</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="share_copy_button">
+       <property name="geometry">
+        <rect>
+         <x>460</x>
+         <y>490</y>
+         <width>191</width>
+         <height>91</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Copy to clipboard</string>
+       </property>
+      </widget>
      </widget>
+    </widget>
+    <widget class="QWidget" name="settings_tab">
+     <attribute name="title">
+      <string>Settings</string>
+     </attribute>
     </widget>
     <widget class="QWidget" name="logs_tab">
      <attribute name="title">

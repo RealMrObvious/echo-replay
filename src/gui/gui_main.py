@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QMainWindow, QApplication
 from PyQt6.QtGui import QIcon
+from .tabs.share_tab import ShareTab
 from .tray import Tray
 from .ui_main_window import Ui_MainWindow
 
@@ -12,6 +13,7 @@ class MainWindow(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.share_tab = ShareTab(self.ui)
 
         self.hide()
 
