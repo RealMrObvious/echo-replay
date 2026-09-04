@@ -10,23 +10,22 @@ The goal is a ShadowPlay-style/steelseries moments experience using OBS and the 
 - Watches for games launching and closing
 - Automatically starts and configures OBS
 - Creates and manages a dedicated OBS capture scene
-- Supports:
-  - Game Capture
 - Automatically finds the correct game window from OBS
 - Automatically fits capture sources to the OBS canvas
 - Uses OBS Replay Buffer for instant clips
 - Global hotkey support for saving clips
 - System tray application
 - Runs quietly in the background
+- Compression/transcoding for discord sharing
+- installer/setup wizard
 
 ## Future Goals
-- Compression/transcoding for discord sharing
 - Automatic/bulk game searching
-- improved gui/menu
-- cleaner code
-- installer/setup wizard
-- linux/apple support (kinda already there? but untested)
-- better setup guide/docs
+- improved gui/menu (wip)
+- cleaner code (wip)
+- better setup guide/docs (wip)
+- linux/apple support
+- Swap to using profiles instead of scenes in OBS
 
 ## Requirements
 
