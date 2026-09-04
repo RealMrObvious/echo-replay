@@ -10,12 +10,19 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
 
         self.setWindowIcon(QIcon("media/icon.png"))
+        self.start_minimized = False
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.share_tab = ShareTab(self.ui)
 
-        self.hide()
+        if self.start_minimized: 
+            self.hide()
+        else: 
+            self.show()
+            self.raise_()
+            self.activateWindow()
+            self.open_gallery()
 
         self.tray = Tray(QApplication.instance(), self)
 
