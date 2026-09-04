@@ -219,4 +219,5 @@ __marimo__/
 .streamlit/secrets.toml
 
 installer/
-# config.json
+config.json
+main_window_ui.py
