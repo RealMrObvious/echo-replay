@@ -26,7 +26,7 @@ VIDEO_ENCODERS = {
 class FFmpegController(QObject):
     progress = pyqtSignal(int)
     finished = pyqtSignal(bool, str)
-    error = pyqtSignal(bool)
+    error = pyqtSignal(bool, str)
     thumbnail_ready = pyqtSignal(str)
 
     def __init__(self, target_mb, selected_codec, target_v_res, target_h_res, audio_kbps=128):
@@ -41,7 +41,7 @@ class FFmpegController(QObject):
         self.find_video_encoders()
 
         for i in self.available_video_encoders.items():
-            print(f"Encoded vailable: {i}")
+            print(f"Encoders Available: {i}")
 
         if(selected_codec not in self.available_video_encoders.values()):
             raise ValueError(f"{selected_codec} is not available as an encoder")
@@ -71,11 +71,11 @@ class FFmpegController(QObject):
                 )
 
                 if result.returncode == 0:
-                    print(f"{codec_full_name} ({codec_short_name}): available")
+                    # print(f"{codec_full_name} ({codec_short_name}): available")
                     self.available_video_encoders[codec_full_name] = codec_short_name
 
                 else:
-                    print(f"{codec_full_name} ({codec_short_name}): unavailable")
+                    # print(f"{codec_full_name} ({codec_short_name}): unavailable")
 
                     if result.stderr:
                         print(result.stderr.strip())
@@ -113,6 +113,31 @@ class FFmpegController(QObject):
 
         return float(result.stdout.strip())
 
+    def generate_thumbnail(self, video_path):
+            duration = self._get_duration(video_path)
+    
+            middle = duration / 2
+    
+            thumbnail_path = "thumbnail.jpg"
+    
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-y",
+                    "-loglevel", "error",
+                    "-ss", str(middle),
+                    "-i", str(video_path),
+                    "-frames:v", "1",
+                    "-vf", "scale=320:-1",
+                    thumbnail_path,
+                ],
+                check=True,
+            )
+
+            print(f"Thumbnail Ready: {thumbnail_path}")
+
+            self.thumbnail_ready.emit(thumbnail_path)
+
     def compress_video(self, input_file, output_file=None):
         input_file = Path(input_file)
 
@@ -123,6 +148,15 @@ class FFmpegController(QObject):
                 input_file.parent
                 / f"{input_file.stem}_compressed{input_file.suffix}"
             )
+
+        actual_bytes = input_file.stat().st_size
+        actual_mb = actual_bytes / (1024 * 1024)
+
+        if actual_mb <= self.target_mb:
+            print(f"File already fits the size ({actual_mb} <= {self.target_mb})")
+            self.progress.emit(100)
+            self.recent_output = input_file
+            return input_file
 
         duration = self._get_duration(input_file)
 
@@ -143,7 +177,7 @@ class FFmpegController(QObject):
         print(f"Initial video bitrate: {video_kbps} kbps")
 
         # Try several encodes.
-        for attempt in range(4):
+        for attempt in range(5):
             print(
                 f"Encoding attempt {attempt + 1}: "
                 f"{video_kbps} kbps"
@@ -189,40 +223,13 @@ class FFmpegController(QObject):
             self.progress.emit((progress_percentage))
 
             # Slight safety margin.
-            video_kbps = int(video_kbps * ratio * 0.98)
-
-            if video_kbps <= 0:
-                raise ValueError("Unable to reach target size.")
-
-            
+            video_kbps = int(video_kbps * ratio * 0.98)            
 
         raise RuntimeError(
             f"Could not compress below {self.target_mb} MB "
             f"after {attempt + 1} attempts."
+            f"\nConsider lowering the output resolution."
         )
-
-    def generate_thumbnail(self, video_path):
-        duration = self._get_duration(video_path)
-
-        middle = duration / 2
-
-        thumbnail_path = "thumbnail.jpg"
-
-        subprocess.run(
-            [
-                "ffmpeg",
-                "-y",
-                "-loglevel", "error",
-                "-ss", str(middle),
-                "-i", str(video_path),
-                "-frames:v", "1",
-                "-vf", "scale=320:-1",
-                thumbnail_path,
-            ],
-            check=True,
-        )
-
-        self.thumbnail_ready.emit(thumbnail_path)
 
 
     @pyqtSlot(str)
@@ -238,10 +245,9 @@ class FFmpegController(QObject):
             self.generate_thumbnail(path)
             self.compress_video(path)
             self.finished.emit(True, str(self.recent_output))
-        except:
+        except BaseException as e:
             print(f"Error compressing video: {path}")
-            self.error.emit(True)
-
+            self.error.emit(True, str(e))
     
 
 
