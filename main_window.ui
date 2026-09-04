@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Echo Replay</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget">
@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="gallery_tab">
      <attribute name="title">
@@ -238,6 +238,443 @@
      <attribute name="title">
       <string>Settings</string>
      </attribute>
+     <widget class="QTabWidget" name="settings_sub_menu">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1211</width>
+        <height>732</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="General">
+       <attribute name="title">
+        <string>General</string>
+       </attribute>
+       <widget class="QLabel" name="settings_general_title">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>191</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <bold>true</bold>
+          <underline>true</underline>
+         </font>
+        </property>
+        <property name="text">
+         <string>General Settings</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="settings_start_min_checkbox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>151</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Start Minimized</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="settings_capture_mic_checkbox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>100</y>
+          <width>151</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Capture Mic</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="settings_hotkey_textbox">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>145</y>
+          <width>281</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_hotkey_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>150</y>
+          <width>141</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Hotkey:</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="settings_capture_tab">
+       <attribute name="title">
+        <string>OBS</string>
+       </attribute>
+       <widget class="QLabel" name="settings_obs_title">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>191</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <bold>true</bold>
+          <underline>true</underline>
+         </font>
+        </property>
+        <property name="text">
+         <string>OBS Settings:</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="settings_output_dir_textbox">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>55</y>
+          <width>281</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_output_dir_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>141</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Output Directory:</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="settings_path_textbox">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>100</y>
+          <width>281</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_path_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>105</y>
+          <width>141</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>OBS Path:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_host_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>150</y>
+          <width>141</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>OBS Host:</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="settings_host_textbox">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>145</y>
+          <width>281</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="settings_port_textbox">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>190</y>
+          <width>281</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_port_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>195</y>
+          <width>141</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>OBS Port:</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="settings_connection_timeout_textbox">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>280</y>
+          <width>281</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_connection_timeout_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>285</y>
+          <width>181</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>OBS Connection Timeout:</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="settings_password_textbox">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>235</y>
+          <width>281</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_password_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>240</y>
+          <width>141</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>OBS Password:</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="settings_dedicated_scene_checkbox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>315</y>
+          <width>231</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Use Dedicated Capture Scene</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="settings_dedicated_scene_textbox">
+        <property name="geometry">
+         <rect>
+          <x>250</x>
+          <y>360</y>
+          <width>281</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_dedicated_scene_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>365</y>
+          <width>221</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Dedicated Capture Scene Name:</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="Share">
+       <attribute name="title">
+        <string>Share</string>
+       </attribute>
+       <widget class="QLabel" name="settings_resolution_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>106</y>
+          <width>141</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Output Resolution:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_encoder_label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>141</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Encoder:</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="settings_encoder_dropdown">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>55</y>
+          <width>220</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="settings_share_title">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>191</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <bold>true</bold>
+          <underline>true</underline>
+         </font>
+        </property>
+        <property name="text">
+         <string>Share Settings:</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="settings_resolution_dropdown">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>100</y>
+          <width>220</width>
+          <height>30</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="Misc">
+       <attribute name="title">
+        <string>Misc</string>
+       </attribute>
+      </widget>
+     </widget>
     </widget>
     <widget class="QWidget" name="logs_tab">
      <attribute name="title">
